@@ -6,6 +6,8 @@ import pprint
 import pymongo
 from pymongo import MongoClient
 
+print "\nMongoDB Atlas Connection Analysis Tool\n"
+
 # Single octet whitelist entries
 single_octets = []
 
@@ -70,7 +72,7 @@ if(resp.ok):
     # Get the current operations running on MongoDB
     opData = db.current_op(True)
     print ("Their are {0} current operations".format(len(opData['inprog'])))
-    print "\n"
+    print ""
     
     #pp.pprint(opData['inprog'])
     
@@ -137,7 +139,7 @@ if(resp.ok):
     ]   
     
     results = db.connection_analysis.aggregate(pipeline)
-    print "==== Active Connections (" + str(active_conns) + ") ===="
+    print "            ==== Active Connections (" + str(active_conns) + ") ===="
     print_row('Connection Source', 'Connections')
     for conn in results:
         print_row(conn['_id'], conn['total_connections'])
@@ -164,7 +166,7 @@ if(resp.ok):
 
     results = db.connection_analysis.aggregate(pipeline)
     print "\n"
-    print "==== Dormant Connections (" + str(dormat_conns) + ") ===="
+    print "            ==== Dormant Connections (" + str(dormat_conns) + ") ===="
     print_row('Connection Source', 'Connections')
     for conn in results:
         print_row(conn['_id'], conn['total_connections'])
