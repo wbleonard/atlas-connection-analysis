@@ -70,6 +70,7 @@ if(resp.ok):
     # Get the current operations running on MongoDB
     opData = db.current_op(True)
     print ("Their are {0} current operations".format(len(opData['inprog'])))
+    print "\n"
     
     #pp.pprint(opData['inprog'])
     
@@ -108,7 +109,66 @@ if(resp.ok):
         # Add the record to MongoDB
         db.connection_analysis.insert_one(conn)
 
+    ## Analyze the results
+    def print_row(source, count):
+        print " %-45s %10s" % (source, count)
 
+    active_conns = db.connection_analysis.find({'active':True}).count()
+    dormat_conns = db.connection_analysis.find({'active':False}).count()
+
+    # Active connections summary
+    pipeline =  [
+    {
+        '$match': {
+            'active': True
+        }
+    }, {
+        '$group': {
+            '_id': '$desc', 
+            'total_connections': {
+                '$sum': 1
+            }
+        }
+    }, {
+        '$sort': {
+            'total_connections': -1
+        }
+    }
+    ]   
+    
+    results = db.connection_analysis.aggregate(pipeline)
+    print "==== Active Connections (" + str(active_conns) + ") ===="
+    print_row('Connection Source', 'Connections')
+    for conn in results:
+        print_row(conn['_id'], conn['total_connections'])
+
+    # Dormant connections summary
+    pipeline =  [
+    {
+        '$match': {
+            'active': False
+        }
+    }, {
+        '$group': {
+            '_id': '$desc', 
+            'total_connections': {
+                '$sum': 1
+            }
+        }
+    }, {
+        '$sort': {
+            'total_connections': -1
+        }
+    }
+    ]   
+
+    results = db.connection_analysis.aggregate(pipeline)
+    print "\n"
+    print "==== Dormant Connections (" + str(dormat_conns) + ") ===="
+    print_row('Connection Source', 'Connections')
+    for conn in results:
+        print_row(conn['_id'], conn['total_connections'])
+        
 else:
     resp.raise_for_status()
 
