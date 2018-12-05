@@ -4,11 +4,11 @@ The MongoDB Atlas Real Time monitor will show you how many connections are estab
 
 ![connections](images/connections.png)
 
-Behind the scenes Atlas is running `db.currentOp(true).inprog.length`
+Behind the scenes Atlas is running `db.currentOp(true).inprog.length` to get this number.
 
-In addition to knowing the number of connections, this tool maps the client address from the operation to the IP Whitelist entry in Atlas. If you don't open your cluster to the world (0.0.0.0/0) and take care to document your IP Whitelist entries, this tool may provide some value.
+This tools aims to provide more detail about the source of those connections by mapping the client address from the operation to the IP Whitelist entry in Atlas. If you don't open your cluster to the world (0.0.0.0/0) and take care to document your IP Whitelist entries, this tool may provide some value.
 
-As a prerequisite, you must have already [Configured Atlas API Access](https://docs.atlas.mongodb.com/configure-api-access/) for which you'll need to provide the tool your user name and API key.
+As a prerequisite, you must have already [Configured Atlas API Access](https://docs.atlas.mongodb.com/configure-api-access/) for which you'll need to provide this tool your user name and API key.
 
 To use the tool, you need to populate a [params.py](params.py) file with your credentials:
 
@@ -75,6 +75,7 @@ Their are 82 current operations
  ApplyBatchFinalizerForJournal                          1
  clientcursormon                                        1
  repl writer worker 2                                   1
+ 
 Analysis Complete
 ```
 

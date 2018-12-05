@@ -174,4 +174,4 @@ if(resp.ok):
 else:
     resp.raise_for_status()
 
-print("Analysis Complete")
+print("\nAnalysis Complete")
