@@ -29,53 +29,60 @@ The `analysis` database is used to run some aggregation queries against the comb
 Once the parameters are in place, running the tool will produce output like the following:
 
 ```
-brianleonard$ python analyze_conn.py
+python analyze_conn.py
 
 MongoDB Atlas Connection Analysis Tool
 
 Their are 7 whitelist entries
-Their are 82 current operations
+Their are 81 current operations
 
-            ==== Active Connections (11) ====
+Active Operations:11
+Dormant Operations:70
+
+            ==== Active Whitelist Connections (1) ====
+ Connection Source                             Connections
+ Brian Leonard's Home Office                            1
+
+            ==== Active System Connections (10) ====
  Connection Source                             Connections
  System                                                 3
  WT RecordStoreThread: local.oplog.rs                   1
  ReplBatcher                                            1
  monitoring keys for HMAC                               1
  watchdogMonitor                                        1
- NoopWriter                                             1
- Brian Leonard's Home Office                            1
- rsSync                                                 1
  watchdogCheck                                          1
+ NoopWriter                                             1
+ rsSync                                                 1
 
-
-            ==== Dormant Connections (71) ====
+            ==== Dormant Whitelist Connections (23) ====
  Connection Source                             Connections
- System                                                27
  ION App Team                                          14
  Brian Leonard's Home Office                            9
- replexec-5789                                          1
- repl writer worker 1                                   1
- repl writer worker 4                                   1
- replexec-5788                                          1
- SessionKiller                                          1
- TTLMonitor                                             1
- replexec-5790                                          1
- rsBackgroundSync                                       1
- WTCheckpointThread                                     1
- SyncSourceFeedback                                     1
- WTJournalFlusher                                       1
- LogicalSessionCacheReap                                1
- WTOplogJournalThread                                   1
- LogicalSessionCacheRefresh                             1
- ftdc                                                   1
- initandlisten                                          1
- replication-1                                          1
- repl writer worker 14                                  1
- ApplyBatchFinalizerForJournal                          1
- clientcursormon                                        1
+
+            ==== Dormant System Connections (47) ====
+ Connection Source                             Connections
+ System                                                27
  repl writer worker 2                                   1
- 
+ clientcursormon                                        1
+ ApplyBatchFinalizerForJournal                          1
+ repl writer worker 14                                  1
+ replication-1                                          1
+ initandlisten                                          1
+ ftdc                                                   1
+ SessionKiller                                          1
+ rsBackgroundSync                                       1
+ replexec-5859                                          1
+ repl writer worker 4                                   1
+ WTOplogJournalThread                                   1
+ LogicalSessionCacheReap                                1
+ replexec-5863                                          1
+ WTJournalFlusher                                       1
+ repl writer worker 1                                   1
+ TTLMonitor                                             1
+ SyncSourceFeedback                                     1
+ WTCheckpointThread                                     1
+ LogicalSessionCacheRefresh                             1
+
 Analysis Complete
 ```
 

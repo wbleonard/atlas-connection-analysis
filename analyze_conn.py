@@ -27,6 +27,32 @@ def getNetwork(ip):
 
     return network
 
+def printResults(Title, active, whitelist, connections):
+    pipeline =  [
+    {
+        '$match': {
+            'active': active,
+            'whitelist': whitelist
+        }
+    }, {
+        '$group': {
+            '_id': '$desc', 
+            'total_connections': {
+                '$sum': 1
+            }
+        }
+    }, {
+        '$sort': {
+            'total_connections': -1
+        }
+    }
+    ]   
+    results = db.connection_analysis.aggregate(pipeline)
+    print "\n            ==== " + Title + " Connections (" + str(connections) + ") ===="
+    print_row('Connection Source', 'Connections')
+    for conn in results:
+        print_row(conn['_id'], conn['total_connections'])
+
 # Establish connection to Atlas
 client = MongoClient(params.conn_string)
 db = client[params.database]
@@ -101,12 +127,15 @@ if(resp.ok):
 
             if network in whitelist_clean:    # This will skip local IPs like 192. or 127.
                 conn['desc'] = whitelist_clean[network]['desc']
+                conn['whitelist'] = True
             else:
                 conn['desc'] = 'System'
+                conn['whitelist'] = False
         
         # Log operations w/out a client (internal w/ no whitelist entry)
         else:
             conn['desc'] = op['desc']
+            conn['whitelist'] = False
 
         # Add the record to MongoDB
         db.connection_analysis.insert_one(conn)
@@ -116,60 +145,26 @@ if(resp.ok):
         print " %-45s %10s" % (source, count)
 
     active_conns = db.connection_analysis.find({'active':True}).count()
-    dormat_conns = db.connection_analysis.find({'active':False}).count()
+    dormant_conns = db.connection_analysis.find({'active':False}).count()
+    active_wl_conns = db.connection_analysis.find({'active':True, 'whitelist':True}).count()
+    dormant_wl_conns = db.connection_analysis.find({'active':False, 'whitelist':True}).count()
+    active_sys_conns = db.connection_analysis.find({'active':True, 'whitelist':False}).count()
+    dormant_sys_conns = db.connection_analysis.find({'active':False, 'whitelist':False}).count()
 
-    # Active connections summary
-    pipeline =  [
-    {
-        '$match': {
-            'active': True
-        }
-    }, {
-        '$group': {
-            '_id': '$desc', 
-            'total_connections': {
-                '$sum': 1
-            }
-        }
-    }, {
-        '$sort': {
-            'total_connections': -1
-        }
-    }
-    ]   
-    
-    results = db.connection_analysis.aggregate(pipeline)
-    print "            ==== Active Connections (" + str(active_conns) + ") ===="
-    print_row('Connection Source', 'Connections')
-    for conn in results:
-        print_row(conn['_id'], conn['total_connections'])
+    print "Active Operations:" + str(active_conns)
+    print "Dormant Operations:" + str(dormant_conns)
 
-    # Dormant connections summary
-    pipeline =  [
-    {
-        '$match': {
-            'active': False
-        }
-    }, {
-        '$group': {
-            '_id': '$desc', 
-            'total_connections': {
-                '$sum': 1
-            }
-        }
-    }, {
-        '$sort': {
-            'total_connections': -1
-        }
-    }
-    ]   
+    # Active Whitelist Connections Summary
+    printResults("Active Whitelist", True, True, active_wl_conns)
 
-    results = db.connection_analysis.aggregate(pipeline)
-    print "\n"
-    print "            ==== Dormant Connections (" + str(dormat_conns) + ") ===="
-    print_row('Connection Source', 'Connections')
-    for conn in results:
-        print_row(conn['_id'], conn['total_connections'])
+    # Active System Connections Summary
+    printResults("Active System", True, False, active_sys_conns)
+
+    # Dormant Whitelist Connections Summary
+    printResults("Dormant Whitelist", False, True, dormant_wl_conns)
+
+    # Dormant System Connections Summary
+    printResults("Dormant System", False, False, dormant_sys_conns)
         
 else:
     resp.raise_for_status()
