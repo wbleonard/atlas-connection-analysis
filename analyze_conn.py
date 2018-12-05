@@ -48,7 +48,7 @@ def printResults(Title, active, whitelist, connections):
     }
     ]   
     results = db.connection_analysis.aggregate(pipeline)
-    print "\n            ==== " + Title + " Connections (" + str(connections) + ") ===="
+    print "\n            ==== " + Title + " Operations (" + str(connections) + ") ===="
     print_row('Connection Source', 'Connections')
     for conn in results:
         print_row(conn['_id'], conn['total_connections'])
