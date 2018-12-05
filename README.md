@@ -8,7 +8,7 @@ Behind the scenes Atlas is running `db.currentOp(true).inprog.length` to get thi
 
 Some of these connections are established by the system, for example `watchdogMonitor`, while others, of course, are established by your client applications. This tool aims to provide more detail about the source of those connections by mapping the client address from the operation to the IP Whitelist entry you configured in Atlas. If you don't open your cluster to the world (0.0.0.0/0) and take care to document your IP Whitelist entries, this tool may provide some value.
 
-To use the tool, you need to populate a [params.py](params.py) file with your credentials. As a prerequisite, you must have already [Configured Atlas API Access](https://docs.atlas.mongodb.com/configure-api-access/). The user provided in the connection string must have [Atlas admin](admin) privileges, which are necessary to run the `db.currentOp(true)` command.
+To use the tool, you need to populate a [params.py](params.py) file with your credentials. As a prerequisite, you must have already [Configured Atlas API Access](https://docs.atlas.mongodb.com/configure-api-access/). The user provided in the connection string must have [Atlas admin](https://docs.atlas.mongodb.com/security-add-mongodb-users/#Atlas-admin) privileges, which are necessary to run the `db.currentOp(true)` command.
 ```
 # Input parameters
 
