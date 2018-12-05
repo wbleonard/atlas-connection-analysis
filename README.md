@@ -2,7 +2,7 @@
 
 The MongoDB Atlas Real Time monitor will show you how many connections are established:
 
-![connections](images/connections.png)
+![connections](images/connections.png | witch=480)
 
 Behind the scenes Atlas is running `db.currentOp(true).inprog.length` to get this number.
 
