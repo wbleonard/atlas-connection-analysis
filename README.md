@@ -6,7 +6,7 @@ The MongoDB Atlas Real Time monitor will show you how many connections are estab
 
 Behind the scenes Atlas is running `db.currentOp(true).inprog.length` to get this number.
 
-This tools aims to provide more detail about the source of those connections by mapping the client address from the operation to the IP Whitelist entry in Atlas. If you don't open your cluster to the world (0.0.0.0/0) and take care to document your IP Whitelist entries, this tool may provide some value.
+Some of these connections are established by the system, for example 'watchdogMonitor', while others, of course, are established by your client applications. This tool aims to provide more detail about the source of those connections by mapping the client address from the operation to the IP Whitelist entry in Atlas. If you don't open your cluster to the world (0.0.0.0/0) and take care to document your IP Whitelist entries, this tool may provide some value.
 
 As a prerequisite, you must have already [Configured Atlas API Access](https://docs.atlas.mongodb.com/configure-api-access/) for which you'll need to provide this tool your user name and API key.
 
