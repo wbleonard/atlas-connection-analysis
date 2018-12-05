@@ -1,6 +1,6 @@
 # Atlas Connection Analysis Tool
 
-The MongoDB Atlas Real Time monitor will show you how many connections are established:
+The MongoDB Atlas [Real-Time Performance Panel](https://docs.atlas.mongodb.com/real-time-performance-panel/) will show you how many connections are established:
 
 ![connections](images/connections.png)
 
