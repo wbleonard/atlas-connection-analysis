@@ -58,7 +58,7 @@ Dormant Operations:186
  Azure Databricks Eastus2                              96
  Eastus2                                               28
  For MongoDB Stitch; do not delete                     19
- RCCL IP                                                8
+ IP                                                     8
  Brian Leonard's Home Office                            2
 
             ==== Dormant System Operations (33) ====
