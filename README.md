@@ -30,56 +30,58 @@ brianleonard$ python analyze_conn.py
 
 MongoDB Atlas Connection Analysis Tool
 
-Their are 7 whitelist entries
-Their are 80 current operations
+There are 46 whitelist entries
+There are 208 current operations
 
-Active Operations:11
-Dormant Operations:69
+Active Operations:22
+Dormant Operations:186
 
-            ==== Active Whitelist Operations (1) ====
+            ==== Active Whitelist Operations (15) ====
  Connection Source                             Connections
+ Azure Databricks Eastus2                              11
+ Eastus2                                                2
+ For MongoDB Stitch; do not delete                      1
  Brian Leonard's Home Office                            1
 
-            ==== Active System Operations (10) ====
+            ==== Active System Operations (7) ====
  Connection Source                             Connections
- System                                                 3
+ NoopWriter                                             1
+ watchdogCheck                                          1
  WT RecordStoreThread: local.oplog.rs                   1
+ watchdogMonitor                                        1
  ReplBatcher                                            1
  monitoring keys for HMAC                               1
- watchdogMonitor                                        1
- watchdogCheck                                          1
- NoopWriter                                             1
  rsSync                                                 1
 
-            ==== Dormant Whitelist Operations (23) ====
+            ==== Dormant Whitelist Operations (153) ====
  Connection Source                             Connections
- ION App Team                                          14
- Brian Leonard's Home Office                            9
+ Azure Databricks Eastus2                              96
+ Eastus2                                               28
+ For MongoDB Stitch; do not delete                     19
+ RCCL IP                                                8
+ Brian Leonard's Home Office                            2
 
-            ==== Dormant System Operations (46) ====
+            ==== Dormant System Operations (33) ====
  Connection Source                             Connections
- System                                                25
- repl writer worker 2                                   1
- clientcursormon                                        1
- ApplyBatchFinalizerForJournal                          1
- repl writer worker 14                                  1
- replication-1                                          1
+ System                                                15
  initandlisten                                          1
- ftdc                                                   1
- LogicalSessionCacheRefresh                             1
- WTOplogJournalThread                                   1
- LogicalSessionCacheReap                                1
  rsBackgroundSync                                       1
- SessionKiller                                          1
- replexec-5870                                          1
- replexec-5871                                          1
- repl writer worker 4                                   1
- WTJournalFlusher                                       1
- repl writer worker 1                                   1
- replexec-5867                                          1
- TTLMonitor                                             1
+ replexec-54                                            1
+ ftdc                                                   1
+ replexec-57                                            1
+ ApplyBatchFinalizerForJournal                          1
+ replexec-56                                            1
  SyncSourceFeedback                                     1
  WTCheckpointThread                                     1
+ WTJournalFlusher                                       1
+ replexec-42                                            1
+ replication-0                                          1
+ WTOplogJournalThread                                   1
+ LogicalSessionCacheReap                                1
+ TTLMonitor                                             1
+ clientcursormon                                        1
+ SessionKiller                                          1
+ LogicalSessionCacheRefresh                             1
 
 Analysis Complete
 ```

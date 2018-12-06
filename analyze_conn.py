@@ -74,7 +74,7 @@ if(resp.ok):
 
     # Convert the JSON response to a dict
     whitelist = json.loads(resp.content)    
-    print ("Their are {0} whitelist entries".format(len(whitelist["results"])))
+    print ("There are {0} whitelist entries".format(len(whitelist["results"])))
     
     ## Pretty print the results
     #print(json.dumps(jData, indent=4, sort_keys=True))
@@ -97,7 +97,7 @@ if(resp.ok):
 
     # Get the current operations running on MongoDB
     opData = db.current_op(True)
-    print ("Their are {0} current operations".format(len(opData['inprog'])))
+    print ("There are {0} current operations".format(len(opData['inprog'])))
     print ""
     
     #pp.pprint(opData['inprog'])
