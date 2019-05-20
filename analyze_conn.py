@@ -6,7 +6,7 @@ import pprint
 import pymongo
 from pymongo import MongoClient
 
-print "\nMongoDB Atlas Connection Analysis Tool\n"
+print("\nMongoDB Atlas Connection Analysis Tool\n")
 
 # Single octet whitelist entries
 single_octets = []
@@ -48,7 +48,7 @@ def printResults(Title, active, whitelist, connections):
     }
     ]   
     results = db.connection_analysis.aggregate(pipeline)
-    print "\n            ==== " + Title + " Operations (" + str(connections) + ") ===="
+    print( "\n            ==== " + Title + " Operations (" + str(connections) + ") ====")
     print_row('Connection Source', 'Connections')
     for conn in results:
         print_row(conn['_id'], conn['total_connections'])
@@ -82,10 +82,16 @@ if(resp.ok):
     
     # Get the IP Address and Description and add to the new whitelist_clean dict
     for key in whitelist["results"]:
-        description = key['comment']       
+        
+        if('comment' in key.values()):
+            description = key['comment']
+        else:
+            description = ""       
+
         cidr = key['cidrBlock']
         whitelist_ip_mask = cidr.split('/')
         whitelist_ip = whitelist_ip_mask[0]
+
         ## Ideally the whitelist entry includes at least 2 octets of the IP address. If not, we'll deal with it.
         network = getNetwork(whitelist_ip)
         entry = {}
@@ -98,7 +104,7 @@ if(resp.ok):
     # Get the current operations running on MongoDB
     opData = db.current_op(True)
     print ("There are {0} current operations".format(len(opData['inprog'])))
-    print ""
+    print("")
     
     #pp.pprint(opData['inprog'])
     
@@ -142,8 +148,9 @@ if(resp.ok):
 
     ## Analyze the results
     def print_row(source, count):
-        print " %-45s %10s" % (source, count)
+        print(" %-45s %10s" % (source, count))
 
+    #active_conns = db.connection_analysis.countDocuments({'active':True})
     active_conns = db.connection_analysis.find({'active':True}).count()
     dormant_conns = db.connection_analysis.find({'active':False}).count()
     active_wl_conns = db.connection_analysis.find({'active':True, 'whitelist':True}).count()
@@ -151,8 +158,8 @@ if(resp.ok):
     active_sys_conns = db.connection_analysis.find({'active':True, 'whitelist':False}).count()
     dormant_sys_conns = db.connection_analysis.find({'active':False, 'whitelist':False}).count()
 
-    print "Active Operations:" + str(active_conns)
-    print "Dormant Operations:" + str(dormant_conns)
+    print("Active Operations:" + str(active_conns))
+    print("Dormant Operations:" + str(dormant_conns))
 
     # Active Whitelist Connections Summary
     printResults("Active Whitelist", True, True, active_wl_conns)
