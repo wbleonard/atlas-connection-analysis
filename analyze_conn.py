@@ -81,13 +81,12 @@ if(resp.ok):
     print ("There are {0} access list entries".format(len(whitelist["results"])))
     
     ## Pretty print the results
-    #print(json.dumps(jData, indent=4, sort_keys=True))
-    #print (jData["results"])
+    #print(json.dumps(whitelist["results"], indent=4, sort_keys=True))
     
     # Get the IP Address and Description and add to the new whitelist_clean dict
     for key in whitelist["results"]:
         
-        if('comment' in key.values()):
+        if('comment' in key.keys()):
             description = key['comment']
         else:
             description = ""       
