@@ -8,14 +8,14 @@ from pymongo import MongoClient
 
 print("\nMongoDB Atlas Connection Analysis Tool\n")
 
-# Single octet whitelist entries
+# Single octet accless list entries
 single_octets = []
 
 # Return the 1st 2 octets of an IP address
 def getNetwork(ip):
     ip_octets = ip.split('.')
 
-    # Track whitelist entries that only define the 1st octet.
+    # Track access list entries that only define the 1st octet.
     if ip_octets[1] == "0":
         single_octets.append(ip_octets[0])
 
@@ -27,12 +27,16 @@ def getNetwork(ip):
 
     return network
 
-def printResults(Title, active, whitelist, connections):
+# A function to print a row of results
+def print_row(source, count):
+    print(" %-45s %10s" % (source, count))
+
+def printResults(Title, active, accessList, connections):
     pipeline =  [
     {
         '$match': {
             'active': active,
-            'whitelist': whitelist
+            'whitelist': accessList
         }
     }, {
         '$group': {
@@ -60,7 +64,7 @@ db = client[params.database]
 ## Set up PrettyPrinter
 pp = pprint.PrettyPrinter(depth=6)
 
-## Get Whitelist Entries
+## Get Access List Entries
 url = "https://cloud.mongodb.com/api/atlas/v1.0/groups/" + params.project_id +"/whitelist"
 resp = requests.get(url, auth=HTTPDigestAuth(params.user, params.password))
 
@@ -69,12 +73,12 @@ if(resp.ok):
     ## Grab the white list entries, remove the subnet mask and create a new dict w/ just the 
     ## first 2 octets a they key. 
 
-    # A new dict for the whitelist entries
+    # A new dict for the access list entries
     whitelist_clean = {}
 
     # Convert the JSON response to a dict
     whitelist = json.loads(resp.content)    
-    print ("There are {0} whitelist entries".format(len(whitelist["results"])))
+    print ("There are {0} access list entries".format(len(whitelist["results"])))
     
     ## Pretty print the results
     #print(json.dumps(jData, indent=4, sort_keys=True))
@@ -92,7 +96,7 @@ if(resp.ok):
         whitelist_ip_mask = cidr.split('/')
         whitelist_ip = whitelist_ip_mask[0]
 
-        ## Ideally the whitelist entry includes at least 2 octets of the IP address. If not, we'll deal with it.
+        ## Ideally the access list entry includes at least 2 octets of the IP address. If not, we'll deal with it.
         network = getNetwork(whitelist_ip)
         entry = {}
         entry['ip'] = whitelist_ip
@@ -102,17 +106,19 @@ if(resp.ok):
     # pp.pprint(whitelist_clean)
 
     # Get the current operations running on MongoDB
-    opData = db.current_op(True)
-    print ("There are {0} current operations".format(len(opData['inprog'])))
+    # Deprecated - https://pymongo.readthedocs.io/en/stable/migrate-to-pymongo4.html#database-current-op-is-removed
+    # opData = db.current_op(True)
+    # https://www.mongodb.com/docs/manual/reference/operator/aggregation/currentOp/
+    opData = list(client.admin.aggregate([{'$currentOp': {"allUsers": True, "idleConnections": True}}]))
+
+    print ("There are {0} current operations".format(len(opData)))
     print("")
-    
-    #pp.pprint(opData['inprog'])
-    
+        
     # Drop the existing operations and connection_analysis collection
     db.operations.drop()
     db.connection_analysis.drop()
 
-    for op in opData['inprog']:
+    for op in opData:
         
         # Store the current operations in MongoDB (this is optional)
         #db.operations.insert_one(op)
@@ -138,7 +144,7 @@ if(resp.ok):
                 conn['desc'] = 'System'
                 conn['whitelist'] = False
         
-        # Log operations w/out a client (internal w/ no whitelist entry)
+        # Log operations w/out a client (internal w/ no access list entry)
         else:
             conn['desc'] = op['desc']
             conn['whitelist'] = False
@@ -147,28 +153,24 @@ if(resp.ok):
         db.connection_analysis.insert_one(conn)
 
     ## Analyze the results
-    def print_row(source, count):
-        print(" %-45s %10s" % (source, count))
-
-    #active_conns = db.connection_analysis.countDocuments({'active':True})
-    active_conns = db.connection_analysis.find({'active':True}).count()
-    dormant_conns = db.connection_analysis.find({'active':False}).count()
-    active_wl_conns = db.connection_analysis.find({'active':True, 'whitelist':True}).count()
-    dormant_wl_conns = db.connection_analysis.find({'active':False, 'whitelist':True}).count()
-    active_sys_conns = db.connection_analysis.find({'active':True, 'whitelist':False}).count()
-    dormant_sys_conns = db.connection_analysis.find({'active':False, 'whitelist':False}).count()
+    active_conns = db.connection_analysis.count_documents({'active':True})
+    dormant_conns = db.connection_analysis.count_documents({'active':False})
+    active_wl_conns = db.connection_analysis.count_documents({'active':True, 'whitelist':True})
+    dormant_wl_conns = db.connection_analysis.count_documents({'active':False, 'whitelist':True})
+    active_sys_conns = db.connection_analysis.count_documents({'active':True, 'whitelist':False})
+    dormant_sys_conns = db.connection_analysis.count_documents({'active':False, 'whitelist':False})
 
     print("Active Operations:" + str(active_conns))
     print("Dormant Operations:" + str(dormant_conns))
 
-    # Active Whitelist Connections Summary
-    printResults("Active Whitelist", True, True, active_wl_conns)
+    # Active Access List Connections Summary
+    printResults("Active Access List", True, True, active_wl_conns)
 
     # Active System Connections Summary
     printResults("Active System", True, False, active_sys_conns)
 
-    # Dormant Whitelist Connections Summary
-    printResults("Dormant Whitelist", False, True, dormant_wl_conns)
+    # Dormant Access L:ist Connections Summary
+    printResults("Dormant Access List", False, True, dormant_wl_conns)
 
     # Dormant System Connections Summary
     printResults("Dormant System", False, False, dormant_sys_conns)
