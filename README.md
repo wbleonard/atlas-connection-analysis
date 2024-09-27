@@ -23,10 +23,34 @@ database = 'analysis'
 ```
 The `analysis` database is used to run some aggregation queries against the combined results. Feel free to name it whatever you like. 
 
-Once the parameters are in place, running the tool will produce output like the following:
+## Quick Start Steps
+1. Get the code:
+```zsh
+git clone https://github.com/wbleonard/atlas-connection-analysis
+```
+2. Update [params.py](params.py) with your MongoDB API key and connection string
+
+3. Create a new Python environment
+```zsh
+python3 -m venv env
+```
+4. Activate the new Python environment
+```zsh
+source env/bin/activate
+```
+
+5. Install the requirements
+```zsh
+pip3 install -r requirements.txt
+```
+6. Run the analysis:
+```zsh
+python3 analyze_conn.py
+
+Running the tool will produce output like the following:
 
 ```
-brianleonard$ python analyze_conn.py
+brianleonard$ python3 analyze_conn.py
 
 MongoDB Atlas Connection Analysis Tool
 
