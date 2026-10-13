@@ -1,7 +1,7 @@
 certifi==2024.8.30
 charset-normalizer==3.3.2
-dnspython==2.6.1
-idna==3.10
-pymongo==4.9.1
-requests==2.32.3
+dnspython==2.8.0
+idna==3.20
+pymongo==4.18.2
+requests==2.34.2
 urllib3==2.8.0
